@@ -153,8 +153,8 @@ const RechargeForm = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {COUNTRY_CODES.map((c) => (
-                <SelectItem key={c.code} value={c.code}>
+              {countries.map((c) => (
+                <SelectItem key={c.code + c.name} value={c.code}>
                   <span className="flex items-center gap-2">
                     <span>{c.flag}</span>
                     <span>{c.code}</span>
