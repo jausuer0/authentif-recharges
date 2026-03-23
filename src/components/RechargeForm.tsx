@@ -75,7 +75,7 @@ const RechargeForm = () => {
     setTimeout(() => {
       toast.success("Votre demande a été envoyée avec succès !");
       setIsSubmitting(false);
-      setFormData({ type: "", amount: "", code: "", countryCode: "+212", phone: "", email: "" });
+      setFormData({ type: "", amount: "", code: "", countryCode: "+33", phone: "", email: "" });
     }, 1200);
   };
 
