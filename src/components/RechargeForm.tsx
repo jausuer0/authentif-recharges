@@ -120,7 +120,7 @@ const RechargeForm = () => {
             className="pr-12"
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
-            MAD
+            EUR
           </span>
         </div>
       </div>
