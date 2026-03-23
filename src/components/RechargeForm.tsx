@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,25 +12,19 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
-const COUNTRY_CODES = [
-  { code: "+212", flag: "🇲🇦", country: "Maroc" },
-  { code: "+33", flag: "🇫🇷", country: "France" },
-  { code: "+1", flag: "🇺🇸", country: "USA" },
-  { code: "+44", flag: "🇬🇧", country: "UK" },
-  { code: "+213", flag: "🇩🇿", country: "Algérie" },
-  { code: "+216", flag: "🇹🇳", country: "Tunisie" },
-  { code: "+221", flag: "🇸🇳", country: "Sénégal" },
-  { code: "+225", flag: "🇨🇮", country: "Côte d'Ivoire" },
-  { code: "+237", flag: "🇨🇲", country: "Cameroun" },
-  { code: "+90", flag: "🇹🇷", country: "Turquie" },
-  { code: "+34", flag: "🇪🇸", country: "Espagne" },
-  { code: "+49", flag: "🇩🇪", country: "Allemagne" },
-];
+interface CountryInfo {
+  name: string;
+  flag: string;
+  code: string;
+}
 
 const RECHARGE_OPTIONS = [
-  { value: "mobile", label: "Recharge mobile" },
-  { value: "internet", label: "Recharge internet" },
-  { value: "tv", label: "Recharge TV" },
+  { value: "transcash", label: "TRANSCASH" },
+  { value: "pcs", label: "PCS" },
+  { value: "itunes", label: "ITUNES" },
+  { value: "neosurf", label: "NEOSURF" },
+  { value: "paysafecard", label: "PAYSAFECARD" },
+  { value: "toneo-first", label: "TONEO FIRST" },
 ];
 
 const RechargeForm = () => {
