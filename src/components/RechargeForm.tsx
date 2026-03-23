@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,37 +12,54 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
-const COUNTRY_CODES = [
-  { code: "+212", flag: "🇲🇦", country: "Maroc" },
-  { code: "+33", flag: "🇫🇷", country: "France" },
-  { code: "+1", flag: "🇺🇸", country: "USA" },
-  { code: "+44", flag: "🇬🇧", country: "UK" },
-  { code: "+213", flag: "🇩🇿", country: "Algérie" },
-  { code: "+216", flag: "🇹🇳", country: "Tunisie" },
-  { code: "+221", flag: "🇸🇳", country: "Sénégal" },
-  { code: "+225", flag: "🇨🇮", country: "Côte d'Ivoire" },
-  { code: "+237", flag: "🇨🇲", country: "Cameroun" },
-  { code: "+90", flag: "🇹🇷", country: "Turquie" },
-  { code: "+34", flag: "🇪🇸", country: "Espagne" },
-  { code: "+49", flag: "🇩🇪", country: "Allemagne" },
-];
+interface CountryInfo {
+  name: string;
+  flag: string;
+  code: string;
+}
 
 const RECHARGE_OPTIONS = [
-  { value: "mobile", label: "Recharge mobile" },
-  { value: "internet", label: "Recharge internet" },
-  { value: "tv", label: "Recharge TV" },
+  { value: "transcash", label: "TRANSCASH" },
+  { value: "pcs", label: "PCS" },
+  { value: "itunes", label: "ITUNES" },
+  { value: "neosurf", label: "NEOSURF" },
+  { value: "paysafecard", label: "PAYSAFECARD" },
+  { value: "toneo-first", label: "TONEO FIRST" },
 ];
 
 const RechargeForm = () => {
+  const [countries, setCountries] = useState<CountryInfo[]>([]);
   const [formData, setFormData] = useState({
     type: "",
     amount: "",
     code: "",
-    countryCode: "+212",
+    countryCode: "+33",
     phone: "",
     email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch("https://restcountries.com/v3.1/all?fields=name,idd,flag")
+      .then((res) => res.json())
+      .then((data: any[]) => {
+        const parsed: CountryInfo[] = data
+          .filter((c) => c.idd?.root)
+          .map((c) => ({
+            name: c.name.common,
+            flag: c.flag,
+            code: c.idd.root + (c.idd.suffixes?.[0] || ""),
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        setCountries(parsed);
+      })
+      .catch(() => {
+        setCountries([
+          { name: "France", flag: "🇫🇷", code: "+33" },
+          { name: "Maroc", flag: "🇲🇦", code: "+212" },
+        ]);
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +75,7 @@ const RechargeForm = () => {
     setTimeout(() => {
       toast.success("Votre demande a été envoyée avec succès !");
       setIsSubmitting(false);
-      setFormData({ type: "", amount: "", code: "", countryCode: "+212", phone: "", email: "" });
+      setFormData({ type: "", amount: "", code: "", countryCode: "+33", phone: "", email: "" });
     }, 1200);
   };
 
@@ -103,7 +120,7 @@ const RechargeForm = () => {
             className="pr-12"
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
-            MAD
+            EUR
           </span>
         </div>
       </div>
@@ -136,8 +153,8 @@ const RechargeForm = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {COUNTRY_CODES.map((c) => (
-                <SelectItem key={c.code} value={c.code}>
+              {countries.map((c) => (
+                <SelectItem key={c.code + c.name} value={c.code}>
                   <span className="flex items-center gap-2">
                     <span>{c.flag}</span>
                     <span>{c.code}</span>
