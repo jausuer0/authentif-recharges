@@ -28,15 +28,38 @@ const RECHARGE_OPTIONS = [
 ];
 
 const RechargeForm = () => {
+  const [countries, setCountries] = useState<CountryInfo[]>([]);
   const [formData, setFormData] = useState({
     type: "",
     amount: "",
     code: "",
-    countryCode: "+212",
+    countryCode: "+33",
     phone: "",
     email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch("https://restcountries.com/v3.1/all?fields=name,idd,flag")
+      .then((res) => res.json())
+      .then((data: any[]) => {
+        const parsed: CountryInfo[] = data
+          .filter((c) => c.idd?.root)
+          .map((c) => ({
+            name: c.name.common,
+            flag: c.flag,
+            code: c.idd.root + (c.idd.suffixes?.[0] || ""),
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        setCountries(parsed);
+      })
+      .catch(() => {
+        setCountries([
+          { name: "France", flag: "🇫🇷", code: "+33" },
+          { name: "Maroc", flag: "🇲🇦", code: "+212" },
+        ]);
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
