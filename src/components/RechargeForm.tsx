@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,12 +72,27 @@ const RechargeForm = () => {
 
     setIsSubmitting(true);
 
-    // TODO: integrate with Lovable Cloud for email sending
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke("send-email", {
+        body: {
+          type: formData.type,
+          amount: formData.amount,
+          code: formData.code,
+          phone: `${formData.countryCode} ${formData.phone}`,
+          email: formData.email,
+        },
+      });
+
+      if (error) throw error;
+
       toast.success("Votre demande a été envoyée avec succès !");
-      setIsSubmitting(false);
       setFormData({ type: "", amount: "", code: "", countryCode: "+33", phone: "", email: "" });
-    }, 1200);
+    } catch (err: any) {
+      console.error("Erreur envoi email:", err);
+      toast.error("Erreur lors de l'envoi. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
