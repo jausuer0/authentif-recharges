@@ -25,7 +25,7 @@ const Index = () => {
                 <span className="text-primary"> toute confiance</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg">
-                Authentifiez vos tickets de recharge en quelques secondes. Simple, rapide et sécurisé.
+               Un service support ultra rapide pour authentifier vos tickets de recharge mobile. Ne laissez plus le doute gâcher votre expérience de recharge.
               </p>
               <Button size="lg" onClick={scrollToForm} className="text-base px-8 py-6 shadow-lg shadow-primary/25">
                 Authentifier votre ticket
@@ -35,7 +35,7 @@ const Index = () => {
             {/* Right: Image */}
             <div className="flex-1 flex justify-center">
               <img
-                src={heroImage}
+                src="https://static.rapido.com/cms/sites/24/2024/07/12123029/Transcash.png"
                 alt="Recharge mobile"
                 width={800}
                 height={800}

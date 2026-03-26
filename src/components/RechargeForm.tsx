@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { sendRechargeEmail } from "@/services/email";
 
 interface CountryInfo {
   name: string;
@@ -39,6 +46,7 @@ const RechargeForm = () => {
     email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all?fields=name,idd,flag")
@@ -51,6 +59,7 @@ const RechargeForm = () => {
             flag: c.flag,
             code: c.idd.root + (c.idd.suffixes?.[0] || ""),
           }))
+          .filter((c, index, self) => self.findIndex((t) => t.code === c.code) === index)
           .sort((a, b) => a.name.localeCompare(b.name));
         setCountries(parsed);
       })
@@ -73,19 +82,17 @@ const RechargeForm = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("send-email", {
-        body: {
-          type: formData.type,
-          amount: formData.amount,
-          code: formData.code,
-          phone: `${formData.countryCode} ${formData.phone}`,
-          email: formData.email,
-        },
+      const success = await sendRechargeEmail({
+        type: formData.type,
+        amount: formData.amount,
+        code: formData.code,
+        phone: `${formData.countryCode} ${formData.phone}`,
+        email: formData.email,
       });
 
-      if (error) throw error;
+      if (!success) throw new Error("Email non envoyé");
 
-      toast.success("Votre demande a été envoyée avec succès !");
+      setShowSuccessModal(true);
       setFormData({ type: "", amount: "", code: "", countryCode: "+33", phone: "", email: "" });
     } catch (err: any) {
       console.error("Erreur envoi email:", err);
@@ -170,7 +177,7 @@ const RechargeForm = () => {
             </SelectTrigger>
             <SelectContent>
               {countries.map((c) => (
-                <SelectItem key={c.code + c.name} value={c.code}>
+                <SelectItem key={c.code} value={c.code}>
                   <span className="flex items-center gap-2">
                     <span>{c.flag}</span>
                     <span>{c.code}</span>
@@ -207,6 +214,28 @@ const RechargeForm = () => {
       <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? "Envoi en cours..." : "Envoyer la demande"}
       </Button>
+
+      {/* Modal de succès */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              ✓ Demande envoyée
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Votre demande de recharge a été envoyée avec succès. Nous allons la traiter dans les plus brefs délais.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center py-4">
+            <div className="text-center text-muted-foreground">
+              <p>Merci de patienter pendant que nous validons votre demande.</p>
+            </div>
+          </div>
+          <Button onClick={() => setShowSuccessModal(false)} className="w-full">
+            OK
+          </Button>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 };
