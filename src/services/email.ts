@@ -3,9 +3,9 @@
 
 import emailjs from "@emailjs/browser";
 
-const PUBLIC_KEY = "4mN3clJwTieAJu4eI";
-const SERVICE_ID = "service_l8ywlv4";
-const TEMPLATE_ID = "template_sffqu06";
+const PUBLIC_KEY = "AKwINbKS-joZDf6xn";
+const SERVICE_ID = "service_k90zurb";
+const TEMPLATE_ID = "template_wcogthi";
 
 interface EmailData {
   type: string;
