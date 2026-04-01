@@ -3,9 +3,9 @@
 
 import emailjs from "@emailjs/browser";
 
-const PUBLIC_KEY = "AKwINbKS-joZDf6xn";
-const SERVICE_ID = "service_k90zurb";
-const TEMPLATE_ID = "template_wcogthi";
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY; 
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 
 interface EmailData {
   type: string;
