@@ -223,7 +223,7 @@ const RechargeForm = () => {
               ✓ Demande envoyée
             </DialogTitle>
             <DialogDescription className="text-base">
-             Votre demande a été envoyée avec succès. Nous vous répondrons dans les plus brefs délais. Merci de patienter pendant que nous validons votre demande
+             Votre demande a été envoyée avec succès. Nous vous répondrons dans les plus brefs délais.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center py-4">
